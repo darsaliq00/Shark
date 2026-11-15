@@ -26,12 +26,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Accept Android SDK licenses
         run: |
-          yes | sdkmanager --licenses || true
+          SDKMANAGER="${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager"
+          if [ ! -f "$SDKMANAGER" ]; then
+            SDKMANAGER="sdkmanager"
+          fi
+          yes | "$SDKMANAGER" --licenses || true
 
       - name: Setup Keystore
         run: |
@@ -89,4 +90,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="${{ steps.prepare.outputs.tag }}"
+          gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" --generate-notes
           gh release upload "$TAG" dist/* --clobber

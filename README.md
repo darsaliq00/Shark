@@ -12,6 +12,12 @@
   <a href="https://gitee.com/puci1/Shark/releases/tag/v2.2.3"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
 </p>
 
+> [!NOTE]
+> **Credits & Upstream Attribution**:
+> This repository is an English translation fork of the original [Shark](https://github.com/Yunnijian/Shark) created by [Yunnijian](https://github.com/Yunnijian).
+> All original exploit implementations, kernel modules, and code logic belong to Yunnijian and upstream contributors.
+> This fork only translates the user interface, manual, and documentation to English with no copyright claims.
+
 Shark supports OnePlus, OPPO, Realme, iQOO and other devices without unlocking bootloader (BL). Only requires adb shell to start. The app drives the on-device exploit via Stellar or Shizuku, obtains temporary kernel privileges, and loads the LKM corresponding to the selected root manager, providing a KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, or FinaSU root environment.
 
 ## Interface
@@ -196,8 +202,10 @@ Universal KO and dual KMI loader are built in [KSU-Universal](https://github.com
 - CVE-2026-98260 is a race-condition UAF; any run could cause a kernel panic or reboot.
 - For research on owned devices only. Use at your own risk.
 
-## Source & Licenses
+## Credits, Source & Licenses
 
+- **Original Author**: [Yunnijian](https://github.com/Yunnijian) ([Yunnijian/Shark](https://github.com/Yunnijian/Shark))
+- **English Translation Fork**: Maintained by [darsaliq00](https://github.com/darsaliq00). This fork only translates UI strings, user manual, and documentation to English with zero copyright claim over original code or assets.
 - Shark original code licensed under GPL-3.0 (see `LICENSE`); third-party components listed in `NOTICE`.
 - Universal KSU LKM based on SukiSU Ultra (GPL-3.0).
 - SUSFS guard and Hybrid Mount are GPL-2.0.

@@ -2014,7 +2014,7 @@ class MainActivity : ComponentActivity() {
                         onClick = { aboutPage = AboutPage.LICENSES }
                     ) {
                         Text(
-                            text = "App icon created by this project. Third-party components are copyrighted by their respective authors. See Open Source Licenses for full texts.",
+                            text = "Original Shark by Yunnijian. English translation fork by darsaliq00 (translation only, no copyright claim). Third-party components copyrighted by their respective authors.",
                             kind = CouiTextKind.PreferenceSummary,
                             color = colors.title,
                             textAlign = TextAlign.Start
@@ -2026,8 +2026,8 @@ class MainActivity : ComponentActivity() {
                 Group {
                     SettingItem(
                         icon = Icons.Filled.Code,
-                        title = "Source Code",
-                        summary = "View source code on GitHub",
+                        title = "Original Upstream Source",
+                        summary = "Yunnijian/Shark on GitHub",
                         onClick = { uriHandler.openUri(PROJECT_URL) },
                         trailing = { Chevron() }
                     )

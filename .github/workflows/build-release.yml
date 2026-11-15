@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - 'v*'
-  workflow_dispatch: {}
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -36,31 +36,16 @@ jobs:
       - name: Setup Keystore
         run: |
           mkdir -p app/keystore
-          if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ]; then
-            echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > app/keystore/release.jks
-            cat << EOF > app/keystore.properties
-          storeFile=keystore/release.jks
-          storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          keyAlias=${{ secrets.KEY_ALIAS }}
-          keyPassword=${{ secrets.KEY_PASSWORD }}
-          EOF
-          else
-            keytool -genkeypair -v \
-              -keystore app/keystore/release.jks \
-              -alias shark \
-              -keyalg RSA \
-              -keysize 2048 \
-              -validity 10000 \
-              -storepass shark123 \
-              -keypass shark123 \
-              -dname "CN=Shark, OU=Shark, O=Shark, L=City, S=State, C=US"
-            cat << 'EOF' > app/keystore.properties
-storeFile=keystore/release.jks
-storePassword=shark123
-keyAlias=shark
-keyPassword=shark123
-EOF
-          fi
+          keytool -genkeypair -v \
+            -keystore app/keystore/release.jks \
+            -alias shark \
+            -keyalg RSA \
+            -keysize 2048 \
+            -validity 10000 \
+            -storepass shark123 \
+            -keypass shark123 \
+            -dname "CN=Shark, OU=Shark, O=Shark, L=City, S=State, C=US"
+          printf "storeFile=keystore/release.jks\nstorePassword=shark123\nkeyAlias=shark\nkeyPassword=shark123\n" > app/keystore.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x app/gradlew

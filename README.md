@@ -1,9 +1,9 @@
 <h1 align="center"><img src="docs/images/app-icon.png" width="56" height="56" align="absmiddle" alt="Shark"> Shark</h1>
 
-<p align="center"><b>多机型 Android 一键临时 Root 与管理器切换工具</b></p>
+<p align="center"><b>Multi-device Android One-Click Temporary Root & Root Manager Switcher</b></p>
 
 <p align="center">
-  <a href="https://github.com/Yunnijian/Shark/releases/tag/v2.2.3"><img src="docs/badges/release.svg" alt="Release"></a>
+  <a href="https://github.com/darsaliq00/Shark/releases/tag/v2.4.2"><img src="docs/badges/release.svg" alt="Release"></a>
   <a href="LICENSE"><img src="docs/badges/license.svg" alt="License"></a>
   <img src="docs/badges/android.svg" alt="Android">
   <img src="docs/badges/kotlin.svg" alt="Kotlin">
@@ -12,130 +12,107 @@
   <a href="https://gitee.com/puci1/Shark/releases/tag/v2.2.3"><img src="docs/badges/gitee.svg" alt="Gitee"></a>
 </p>
 
-Shark 支持 OnePlus、OPPO、Realme、iQOO 等设备，不用解锁 BL，起手只需要
-adb shell；App 通过 Stellar 或 Shizuku 驱动设备端 exploit，拿到临时内核
-权限后按所选管理器加载 LKM，最终得到 KernelSU、KernelSU-Next、BakaSU、
-SukiSU Ultra 或 FinaSU 的 root 环境。
+Shark supports OnePlus, OPPO, Realme, iQOO and other devices without unlocking bootloader (BL). Only requires adb shell to start. The app drives the on-device exploit via Stellar or Shizuku, obtains temporary kernel privileges, and loads the LKM corresponding to the selected root manager, providing a KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, or FinaSU root environment.
 
-## 界面
+## Interface
 
 <table align="center">
   <tr>
-    <td align="center"><img src="docs/screenshots/app-home.jpg" width="180" alt="首页"><br><sub><b>首页</b></sub></td>
-    <td align="center"><img src="docs/screenshots/app-manager-dropdown.jpg" width="180" alt="ROOT 管理器"><br><sub><b>ROOT 管理器</b></sub></td>
-    <td align="center"><img src="docs/screenshots/app-extras.jpg" width="180" alt="拓展功能"><br><sub><b>拓展功能</b></sub></td>
+    <td align="center"><img src="docs/screenshots/app-home.jpg" width="180" alt="Home"><br><sub><b>Home</b></sub></td>
+    <td align="center"><img src="docs/screenshots/app-manager-dropdown.jpg" width="180" alt="ROOT Manager"><br><sub><b>ROOT Manager</b></sub></td>
+    <td align="center"><img src="docs/screenshots/app-extras.jpg" width="180" alt="Extras"><br><sub><b>Extras</b></sub></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/kernelsu-manager.jpg" width="180" alt="KernelSU 管理器"><br><sub><b>KernelSU</b></sub></td>
-    <td align="center"><img src="docs/screenshots/bakasu-manager.jpg" width="180" alt="BakaSU 管理器"><br><sub><b>BakaSU</b></sub></td>
-    <td align="center"><img src="docs/screenshots/sukisu-manager.jpg" width="180" alt="SukiSU 管理器"><br><sub><b>SukiSU Ultra</b></sub></td>
+    <td align="center"><img src="docs/screenshots/kernelsu-manager.jpg" width="180" alt="KernelSU Manager"><br><sub><b>KernelSU</b></sub></td>
+    <td align="center"><img src="docs/screenshots/bakasu-manager.jpg" width="180" alt="BakaSU Manager"><br><sub><b>BakaSU</b></sub></td>
+    <td align="center"><img src="docs/screenshots/sukisu-manager.jpg" width="180" alt="SukiSU Manager"><br><sub><b>SukiSU Ultra</b></sub></td>
   </tr>
 </table>
 
-## 支持范围
+## Supported Devices
 
-| 机型 | 系统 | 完整内核版本 |
+| Device | OS | Full Kernel Release |
 | --- | --- | --- |
-| OnePlus 16（PYB110） | ColorOS 17 | `6.18.21-android17-5-gf957accaf563-ab15926176-4k`<br>`6.18.21-android17-5-g7fcbffcad3e1-ab16353812-4k` |
-| OnePlus 15（PLK110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OnePlus 15T（PLZ110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OnePlus Ace7 Pro（PMS110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OnePlus Ace7（PYF110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OnePlus Ace6T（PLR110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.38-android16-5-g844001fb8721-ab14552068-4k` |
-| OnePlus Ace6 Ultra（PMB110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OnePlus Ace6（PLQ110） | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
-| OnePlus Ace5 Pro（PKR110） | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
-| OnePlus Pad3 Pro（OPD2513） | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
-| OnePlus Pad2 Pro（OPD2413） | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
-| OPPO Find X9 Ultra（PMA110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Find X9 Pro（PLG110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Find X9（PLJ110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Find X9s Pro（PME110EX） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Find X10（PMX110） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Find X8 Ultra（PKJ110） | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
-| OPPO Find N5（PKH110） | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
-| OPPO Pad Mini（OPD2515） | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
-| OPPO Pad 5 Pro（OPD2511） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| OPPO Pad4 Pro（OPD2409） | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
-| Realme GT8 Pro（RMX5200） | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| Realme GT8（RMX6699） | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
-| OPPO K13 Turbo Pro（PLE110） | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
-| Realme Neo8（RMX8899） | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
-| vivo / iQOO 机型 | OriginOS 6/7 | `6.12.58-android16-6-g690108013dcc-abogki576129896-4k`<br>`6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`<br>`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k`<br>`6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`<br>`6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k` |
+| OnePlus 16 (PYB110) | ColorOS 17 | `6.18.21-android17-5-gf957accaf563-ab15926176-4k`<br>`6.18.21-android17-5-g7fcbffcad3e1-ab16353812-4k` |
+| OnePlus 15 (PLK110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OnePlus 15T (PLZ110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OnePlus Ace7 Pro (PMS110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OnePlus Ace7 (PYF110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OnePlus Ace6T (PLR110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.38-android16-5-g844001fb8721-ab14552068-4k` |
+| OnePlus Ace6 Ultra (PMB110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OnePlus Ace6 (PLQ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
+| OnePlus Ace5 Pro (PKR110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
+| OnePlus Pad3 Pro (OPD2513) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
+| OnePlus Pad2 Pro (OPD2413) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
+| OPPO Find X9 Ultra (PMA110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X9 Pro (PLG110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X9 (PLJ110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X9s Pro (PME110EX) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X10 (PMX110) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Find X8 Ultra (PKJ110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
+| OPPO Find N5 (PKH110) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
+| OPPO Pad Mini (OPD2515) | ColorOS 16/17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k`<br>`6.12.58-android16-6-g7704a1ae279b-ab15213644-4k` |
+| OPPO Pad 5 Pro (OPD2511) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| OPPO Pad4 Pro (OPD2409) | ColorOS 17 | `6.6.118-android15-8-gc4127a25dcf3-ab15863337-4k` |
+| Realme GT8 Pro (RMX5200) | ColorOS 17 | `6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| Realme GT8 (RMX6699) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
+| OPPO K13 Turbo Pro (PLE110) | ColorOS 17 | `6.6.118-android15-8-g9bc34d5b0c79-abogki537459655-4k` |
+| Realme Neo8 (RMX8899) | ColorOS 16/17 | `6.12.38-android16-5-g844001fb8721-ab14552068-4k`<br>`6.12.69-android16-6-g242e1a07f878-ab15865446-4k`<br>`6.12.69-android16-6-g5fd39602326e-ab16372235-4k` |
+| vivo / iQOO Models | OriginOS 6/7 | `6.12.58-android16-6-g690108013dcc-abogki576129896-4k`<br>`6.12.58-android16-6-g0a092cc0037a-abogki521987229-4k`<br>`6.12.58-android16-6-gdd6fd5c98918-abogki543627742-4k`<br>`6.12.23-android16-5-g41f4cb1fa7c7-abogki465038634-4k`<br>`6.6.127-android15-8-gd489d4ad2a70-abogki567717946-4k` |
 
-## 支持的管理器
+## Supported Managers
 
-KernelSU、KernelSU-Next、BakaSU、SukiSU Ultra、FinaSU 五家。
+KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, and FinaSU.
 
-管理器 APK 不随 Shark 分发，普通模式会直接使用已安装管理器 APK 里的
-`ksud`，所以**用哪家就先装哪家**。
+Manager APKs are not distributed with Shark. Standard mode directly utilizes `ksud` inside the installed manager APK, so **install whichever manager you intend to use beforehand**.
 
-## 能做什么
+## Features
 
-- **一键临时 Root**：打开 App 后不需要手动选漏洞，它会根据 `uname -r`
-  自动匹配 6.18.21 / 6.12.69 / 6.12.38 / 6.12.58 / 6.12.23 / 6.6.118 / 6.6.127 七条链。点一次「一键越狱」即可完成提权、
-  `ksud late-load`、模块安装和管理器拉起；临时 Root 在重启后消失，下次
-  开机重新执行即可。
-- **五家管理器可选**：ROOT 管理器下拉直接选择 KernelSU、KernelSU-Next、
-  BakaSU、SukiSU Ultra 或 FinaSU。App 不绑定某一家；管理器 APK 需要自己
-  安装，普通模式会直接使用该 APK 里的 ksud 和 LKM。
-- **管理器热切换**：支持 6.18 和 6.12。首次干净开机选择 `Dynamic Switching` 加载
-  通用 KSU LKM（初始为 KernelSU），之后在拓展功能的「管理器热切换」里
-  选目标管理器即可。切换会同步版本号、feature、私有 ioctl 和 primary
-  manager，并自动重开目标管理器，不需要重启或重新越狱。
-- **拓展功能**：6.18 可加载 VFS provider；6.12 / V2505A 可加载 SUSFS；
-  另有反 root 弹窗抑制、越狱后软重启、卸载内核安全防护等开关。按需开启，
-  单项失败不会影响已经完成的 root。
-- **日志与历史**：运行时日志实时滚动；每次越狱会保存一份完整日志到历史页，
-  可查看、删除，左滑可导出分享，方便排查失败或留档。
-- **在线更新**：启动时检查 Gitee Releases，失败再回退 GitHub；发现新版本后
-  应用内下载，校验 SHA-256 和 APK 签名后再交给系统安装器。
-- **Droidspaces 支持**：6.18 下可一键获取最新的 `droidspaces_lkm` 模块，
-  保存到 `Download/Shark/`，之后到 KernelSU 管理器里刷入；App 不内置该模块。
+- **One-Click Temporary Root**: No manual exploit selection required. Automatically matches the 7 exploit chains (6.18.21 / 6.12.69 / 6.12.38 / 6.12.58 / 6.12.23 / 6.6.118 / 6.6.127) based on `uname -r`. Tap "One-Click Jailbreak" to perform privilege escalation, `ksud late-load`, module install, and manager launch. Temporary root disappears upon reboot.
+- **Five Root Managers Available**: Select KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, or FinaSU directly from the dropdown. Not tied to a single manager; standard mode uses `ksud` and LKM directly from your installed APK.
+- **Hot-switch Root Manager**: Supported on 6.18 and 6.12 kernels. Select `Dynamic Switching` on clean boot to load the universal KSU LKM (initial: KernelSU), then switch to any target manager under Extras -> "Hot-switch Root Manager". Synchronizes version, features, private ioctl, primary manager, and restarts target manager without rebooting.
+- **Extras**: Load VFS provider on 6.18; load SUSFS on 6.12 / V2505A; toggle security prompt suppression, soft reboot after jailbreak, and unload kernel security guards. Independent toggles won't break root if one fails.
+- **Logs & History**: Real-time streaming logs during execution. Every run saves a full `.log` in History tab. View, delete, or swipe right to export and share.
+- **Online Updates**: Checks Gitee Releases first, falls back to GitHub. In-app download verifies SHA-256 and APK signature before delegating to system package installer.
+- **Droidspaces Support**: On 6.18, fetch latest `droidspaces_lkm` release, download zip to `Download/Shark/`, and flash via KernelSU Manager.
 
-## 两种 root 方式
+## Two Root Modes
 
-### 普通模式
+### Standard Mode
 
-在 ROOT 管理器里选一家，App 用这家管理器 APK 自带的 `ksud` 加载它自己的
-LKM。这就是该管理器原生的 root 环境。
+Select a manager in the dropdown. The app uses `ksud` bundled in that manager's APK to load its own LKM. This is the native root environment for that manager.
 
-普通模式下换管理器还是需要重启。
+Switching managers in standard mode requires a device reboot.
 
-### 拓展模式
+### Dynamic Switching Mode
 
-在 ROOT 管理器里选 `Dynamic Switching`。App 会用内置的
-`libksud_universal.so` 加载通用 KSU LKM，初始管理器是 KernelSU。
+Select `Dynamic Switching` in the ROOT Manager dropdown. The app loads the universal KSU LKM using bundled `libksud_universal.so` (initial manager is KernelSU).
 
-加载完成后，拓展功能里会出现「管理器热切换」：点开下拉选目标管理器即可，
-选中就切换，App 会自动重开目标管理器。切换只改内核里的 manager profile，
-不卸载模块、不重启。
+After loading, "Hot-switch Root Manager" appears in Extras. Pick any target manager from the dropdown to switch instantly. Modifies only the in-kernel manager profile without unloading modules or rebooting.
 
-通用 KO 和 stock KSU 同名同 hook，所以第一次必须在没有 KSU 的干净开机
-状态下加载；已经加载了 `kernelsu` 时不能热替换。
+Because universal KO shares hook symbols with stock KSU, it must be loaded on a clean boot without existing KSU loaded.
 
-## 使用
+## Usage
 
-1. 安装要用的管理器 APK。想用 Dynamic Switching 的话，建议五家都装上。
-2. 启动 Stellar 或 Shizuku，授权 Shark。
-3. 在 ROOT 管理器下拉里选普通管理器或 `Dynamic Switching`。
-4. 按需打开拓展功能。
-5. 点「一键越狱」，等日志出现 `DONE`。
-6. 普通模式打开管理器授权 root；Dynamic Switching 在拓展功能里选目标
-   管理器，App 会自动切换并打开它。
+1. Install target root manager APK(s). If using Dynamic Switching, installing all five is recommended.
+2. Launch Stellar or Shizuku and grant permission to Shark.
+3. Select your manager or `Dynamic Switching` in ROOT Manager dropdown.
+4. Toggle optional features in Extras as desired.
+5. Tap "One-Click Jailbreak" and wait for `DONE` in logs.
+6. In Standard Mode, open your manager to grant root. In Dynamic Switching, select target manager in Extras to switch and open.
 
-## 项目框架
+## Architecture
 
-Shark 由 Android App、设备端 exploit runner 和可选的内核模块组成。
+Shark consists of an Android App, on-device exploit runners, and optional kernel modules.
 
 ```text
 Shark/
-├── app/                         Android App（Gradle 工程）
+├── app/                         Android App (Gradle Project)
 │   ├── app/src/main/java/com/shark/kty/
-│   │   ├── MainActivity.kt      四个 tab、流程控制、管理器与拓展状态
-│   │   ├── UpdateChecker.kt     Gitee / GitHub 更新检查
-│   │   ├── HistoryStore.kt      日志落盘、历史记录
-│   │   └── DroidspacesModule.kt Droidspaces 模块下载
+│   │   ├── MainActivity.kt      Tabs, flow control, manager & extras state
+│   │   ├── UpdateChecker.kt     Gitee / GitHub update checker
+│   │   ├── HistoryStore.kt      Log persistence, run history
+│   │   └── DroidspacesModule.kt Droidspaces module download
 │   ├── app/src/main/jniLibs/arm64-v8a/
 │   │   ├── libk61821.so         6.18.21 runner
 │   │   ├── libk61269.so         6.12.69 runner
@@ -144,66 +121,62 @@ Shark/
 │   │   ├── libk61223.so         6.12.23 runner
 │   │   ├── libk66118.so         6.6.118 runner
 │   │   ├── libk66127.so         6.6.127 runner
-│   │   ├── libksud_universal.so 双 KMI 通用 loader
+│   │   ├── libksud_universal.so Dual KMI universal loader
 │   │   ├── libsusfs_guard_lkm.so
 │   │   ├── libsusfs_guard_lkm_612.so
 │   │   └── libhybridmount.so
-│   ├── app/src/main/assets/     manual.md、licenses、赞赏码
-│   └── gradle/、keystore/
+│   ├── app/src/main/assets/     manual.md, licenses, donation QR
+│   └── gradle/, keystore/
 ├── exploit/
 │   ├── rust-k61821/             6.18.21 Rust runner
-│   ├── rust-kplant/             6.12 / 6.6 Rust runner（feature 选 K 源文件）
-│   └── src/                     plant_core.inc + K<版本>_plant.c（每内核一份）
+│   ├── rust-kplant/             6.12 / 6.6 Rust runner (features select K source)
+│   └── src/                     plant_core.inc + K<version>_plant.c (per kernel)
 ├── lkm/
-│   ├── susfs4ksu-lkm/           SUSFS guard 源码
-│   ├── hybridmount/             VFS provider 源码
-│   └── susfs-tools/             SUSFS 规则工具
-├── docs/screenshots/            README 截图
-├── ports/v2505a/                V2505A 说明与验证记录
-├── ports/coloros-61269/         6.12.69 双 OTA 构建说明与恢复工具
-├── ports/pkj110-66118/          PKJ110 6.6.118 说明与验证记录
-├── ports/pd2454-66127/          vivo 6.6.127 说明与验证记录
-├── third_party/                 第三方许可与材料
+│   ├── susfs4ksu-lkm/           SUSFS guard source
+│   ├── hybridmount/             VFS provider source
+│   └── susfs-tools/             SUSFS rules tools
+├── docs/screenshots/            README screenshots
+├── ports/v2505a/                V2505A notes and verification records
+├── ports/coloros-61269/         6.12.69 dual OTA build notes & recovery tools
+├── ports/pkj110-66118/          PKJ110 6.6.118 notes and verification records
+├── ports/pd2454-66127/          vivo 6.6.127 notes and verification records
+├── third_party/                 Third-party licenses and materials
 ├── NOTICE / LICENSE
 └── README.md
 ```
 
-**模块分工**
+**Component Responsibilities**
 
-- `app/`：Kotlin/Compose 界面、Shizuku/Stellar 调用、漏洞链选择、
-  拓展开关、日志与在线更新。
-- `exploit/`：Rust 单入口 runner 和 C plant，负责提权、fake cred、
-  `ksud late-load` 与收尾。
-- `lkm/`：SUSFS guard 和 Hybrid Mount VFS provider 的源码与构建脚本。
-- `ports/v2505a/`：V2505A 分支的说明、常量和验证记录。
-- `ports/pd2454-66127/`：vivo 6.6.127 分支的说明、常量和 OTA 提取工具。
-- `third_party/`：第三方许可全文与参考材料。
+- `app/`: Kotlin/Compose UI, Shizuku/Stellar calls, exploit selection, feature toggles, logging, and OTA update checking.
+- `exploit/`: Rust runner and C plant, privilege escalation, fake creds, `ksud late-load`, and post-cleanup.
+- `lkm/`: SUSFS guard and Hybrid Mount VFS provider source and build scripts.
+- `ports/`: Device/kernel-specific notes, constants, and verification tools.
+- `third_party/`: Third-party licenses and reference implementations.
 
-**技术栈**
+**Tech Stack**
 
-- App：Kotlin、Jetpack Compose、COUI-Kit、Shizuku / Stellar API。
-- 设备端：Rust + C，Android NDK arm64。
-- 内核侧：C / GPL-2.0 LKM；通用 KSU KO 在独立项目
-  [KSU-Universal](https://github.com/Yunnijian/KSU-Universal)。
-- 构建：Gradle Kotlin DSL、Cargo、Android SDK/NDK、Docker DDK。
+- App: Kotlin, Jetpack Compose, COUI-Kit, Shizuku / Stellar API.
+- On-device: Rust + C, Android NDK arm64.
+- Kernel side: C / GPL-2.0 LKM; Universal KSU KO in standalone project [KSU-Universal](https://github.com/Yunnijian/KSU-Universal).
+- Build: Gradle Kotlin DSL, Cargo, Android SDK/NDK, Docker DDK.
 
-## 自己编译
+## Compilation
 
-App：
+App:
 
 ```bash
 cd app
 ./gradlew :app:assembleRelease
 ```
 
-设备端 runner（每个内核一个 `libk<版本>.so`，自动装进 jniLibs）：
+On-device runners (one `libk<version>.so` per kernel, packaged into jniLibs):
 
 ```bash
 export ANDROID_NDK_HOME=/path/to/ndk
 ./exploit/build-all.sh
 ```
 
-也可以单独构建某一档：
+Single target build:
 
 ```bash
 cd exploit/rust-kplant
@@ -211,37 +184,33 @@ cargo build --release --target aarch64-linux-android \
     --no-default-features --features k66118
 ```
 
-可用的 feature：`k61269`、`k61238`、`k61258`、`k61223`、`k66118`；
-6.18.21 由 `rust-k61821` 单独构建。
+Available features: `k61269`, `k61238`, `k61258`, `k61223`, `k66118`; 6.18.21 built independently via `rust-k61821`.
 
-通用 KO 和双 KMI loader 在
-[KSU-Universal](https://github.com/Yunnijian/KSU-Universal) 里构建，
-Shark 只内置编译好的 `libksud_universal.so`。
+Universal KO and dual KMI loader are built in [KSU-Universal](https://github.com/Yunnijian/KSU-Universal); Shark includes the precompiled `libksud_universal.so`.
 
-## 注意事项
+## Disclaimers & Notice
 
-- Dynamic Switching 第一次要干净开机；之后切换管理器不用重启。
-- 普通模式必须先装对应管理器 APK，ksud 不从 Shark 内置。
-- KPM 暂未启用。
-- CVE-2026-98260 是竞态 UAF，任何一次运行都可能导致内核 panic 或重启。
-- 只用于自己的设备，风险自负。
+- Dynamic Switching must run initially on a clean boot; subsequent switches do not require reboot.
+- Standard mode requires pre-installing the chosen manager APK.
+- KPM is not yet enabled.
+- CVE-2026-98260 is a race-condition UAF; any run could cause a kernel panic or reboot.
+- For research on owned devices only. Use at your own risk.
 
-## 来源与许可
+## Source & Licenses
 
-- Shark 自研代码采用 GPL-3.0，见 `LICENSE`；第三方组件见 `NOTICE`。
-- 通用 KSU LKM 基于 SukiSU Ultra，GPL-3.0。
-- SUSFS guard 和 Hybrid Mount 为 GPL-2.0。
-- CVE-2026-98260 设计参考 AzirX1337 的公开移植（MIT）。
-- UI 使用 COUI-Kit（MPL-2.0），远程执行使用 Shizuku API（Apache-2.0）。
+- Shark original code licensed under GPL-3.0 (see `LICENSE`); third-party components listed in `NOTICE`.
+- Universal KSU LKM based on SukiSU Ultra (GPL-3.0).
+- SUSFS guard and Hybrid Mount are GPL-2.0.
+- CVE-2026-98260 design references AzirX1337's public implementation (MIT).
+- UI utilizes COUI-Kit (MPL-2.0), remote execution uses Shizuku API (Apache-2.0).
 
-## 发布
+## Releases
 
-- GitHub：https://github.com/Yunnijian/Shark/releases/tag/v2.2.3
-- Gitee：https://gitee.com/puci1/Shark/releases/tag/v2.2.3
-- App：v2.2.3（95）
-- APK SHA-256：`4ec906782cdefc724fe8e84d011cb29a4447c1cb3091731d7987a14e8fe30493`
+- GitHub: https://github.com/darsaliq00/Shark/releases/tag/v2.4.2
+- Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.2.3
+- App: v2.4.2 (101)
 
-通用内核发布：
+Universal Kernel Releases:
 
 - https://github.com/Yunnijian/KSU-Universal/releases/tag/v1.1.0
 - `ksu_universal-android16-6.12.ko`

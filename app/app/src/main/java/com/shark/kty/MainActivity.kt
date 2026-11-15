@@ -451,10 +451,7 @@ class MainActivity : ComponentActivity() {
         customManagerPkg = getSharedPreferences("pyb110", MODE_PRIVATE).getString("custom_manager_pkg", "").orEmpty()
         kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault("Unknown")
         exploit = PROFILE_BY_RELEASE[kernelVersion] ?: ExploitKind.UNSUPPORTED
-        if (manager == ManagerKind.DYNAMIC && !supportsUniversal()) {
-            manager = ManagerKind.KERNELSU
-        }
-        dynamicSwitching = manager == ManagerKind.DYNAMIC
+        dynamicSwitching = manager == ManagerKind.DYNAMIC || manager == ManagerKind.CUSTOM
         hotManager = if (dynamicSwitching) ManagerKind.KERNELSU else manager
         deviceModel = resolveDeviceName()
         refreshStaticStateAsync()
@@ -1163,14 +1160,16 @@ class MainActivity : ComponentActivity() {
                         context.packageManager.getPackageInfo(pkg, 0)
                     }.isSuccess
                     if (!installed) {
-                        errorMsg = "Package '$pkg' is not installed"
-                        return@CouiDialogAction
+                        Toast.makeText(context, "Note: '$pkg' not detected in installed apps yet. Install APK before running jailbreak.", Toast.LENGTH_LONG).show()
                     }
                     customManagerPkg = pkg
                     getSharedPreferences("pyb110", MODE_PRIVATE).edit()
                         .putString("custom_manager_pkg", pkg).apply()
                     customPkgDialogVisible = false
                     addLog("Custom manager package set: $pkg")
+                    if (manager == ManagerKind.CUSTOM) {
+                        selectManager(ManagerKind.CUSTOM)
+                    }
                     if (universalLoaded) {
                         switchHotManagerByPkg(pkg, "Custom ($pkg)")
                     }
@@ -1441,8 +1440,22 @@ class MainActivity : ComponentActivity() {
                 title = "ROOT Manager",
                 values = managerChoices(),
                 selected = manager,
-                label = { it.fullLabel }
+                label = {
+                    if (it == ManagerKind.CUSTOM && customManagerPkg.isNotBlank()) {
+                        "Custom ($customManagerPkg)"
+                    } else {
+                        it.fullLabel
+                    }
+                }
             ) { selectManager(it) }
+            Divider(startIndent = itemDividerIndent())
+            SettingItem(
+                icon = Icons.Filled.SwapHoriz,
+                title = "Custom / Spoofed Package",
+                summary = if (customManagerPkg.isBlank()) "Tap to set spoofed manager package name" else "Package: $customManagerPkg (tap to change)",
+                onClick = { customPkgDialogVisible = true },
+                trailing = { Chevron() }
+            )
             Divider(startIndent = itemDividerIndent())
             SettingItem(
                 icon = Icons.Filled.Tune,
@@ -1609,28 +1622,26 @@ class MainActivity : ComponentActivity() {
                             onCheckedChange = { updateVfsSupport(it) }
                         )
                     }
-                    if (supportsUniversal()) {
-                        if (universalLoaded) {
-                            Divider(startIndent = itemDividerIndent(), color = colors.divider)
-                            DropdownItem(
-                                icon = Icons.Filled.SwapHoriz,
-                                title = "Hot-switch Root Manager",
-                                values = hotManagerChoices(),
-                                selected = hotManager,
-                                label = { it.fullLabel }
-                            ) { target ->
-                                hotManager = target
-                                switchHotManager(target)
-                            }
-                        }
+                    Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                    SettingItem(
+                        icon = Icons.Filled.SwapHoriz,
+                        title = "Custom / Spoofed Manager",
+                        summary = if (customManagerPkg.isBlank()) "Set spoofed/custom package name" else "Active: $customManagerPkg (tap to change)",
+                        onClick = { customPkgDialogVisible = true },
+                        trailing = { Chevron() }
+                    )
+                    if (universalLoaded) {
                         Divider(startIndent = itemDividerIndent(), color = colors.divider)
-                        SettingItem(
+                        DropdownItem(
                             icon = Icons.Filled.SwapHoriz,
-                            title = "Custom / Spoofed Manager",
-                            summary = if (customManagerPkg.isBlank()) "Set spoofed/custom package name" else "Active: $customManagerPkg (tap to change)",
-                            onClick = { customPkgDialogVisible = true },
-                            trailing = { Chevron() }
-                        )
+                            title = "Hot-switch Root Manager",
+                            values = hotManagerChoices(),
+                            selected = hotManager,
+                            label = { it.fullLabel }
+                        ) { target ->
+                            hotManager = target
+                            switchHotManager(target)
+                        }
                     }
                 }
             }
@@ -2416,17 +2427,23 @@ class MainActivity : ComponentActivity() {
 
     private fun selectManager(kind: ManagerKind) {
         manager = kind
-        dynamicSwitching = kind == ManagerKind.DYNAMIC
+        dynamicSwitching = kind == ManagerKind.DYNAMIC || kind == ManagerKind.CUSTOM
         if (dynamicSwitching) {
             hotManager = ManagerKind.KERNELSU
+        }
+        if (kind == ManagerKind.CUSTOM && customManagerPkg.isBlank()) {
+            customPkgDialogVisible = true
         }
         getSharedPreferences("pyb110", MODE_PRIVATE).edit()
             .putString("manager", kind.name)
             .putBoolean("dynamic_switching", dynamicSwitching)
             .apply()
         addLog(
-            if (dynamicSwitching) "ROOT manager selected: Dynamic Switching (universal LKM, initial KernelSU)"
-            else "ROOT manager selected: ${kind.fullLabel}"
+            when (kind) {
+                ManagerKind.DYNAMIC -> "ROOT manager selected: Dynamic Switching (universal LKM, initial KernelSU)"
+                ManagerKind.CUSTOM -> "ROOT manager selected: Custom / Spoofed Manager (${customManagerPkg.ifBlank { "tap to set package" }})"
+                else -> "ROOT manager selected: ${kind.fullLabel}"
+            }
         )
     }
 
@@ -2570,9 +2587,14 @@ class MainActivity : ComponentActivity() {
     )
 
     private fun launchManager() {
-        val intent = packageManager.getLaunchIntentForPackage(manager.pkg)
+        val targetPkg = when {
+            manager == ManagerKind.CUSTOM && customManagerPkg.isNotBlank() -> customManagerPkg
+            manager == ManagerKind.DYNAMIC && customManagerPkg.isNotBlank() -> customManagerPkg
+            else -> manager.pkg
+        }
+        val intent = packageManager.getLaunchIntentForPackage(targetPkg)
         if (intent == null) {
-            addLog("Manager launch entry not found: ${manager.pkg}")
+            addLog("Manager launch entry not found: $targetPkg")
             return
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
@@ -2603,14 +2625,18 @@ class MainActivity : ComponentActivity() {
                     addLog("No privileged backend (Stellar/Shizuku) running")
                     return@launch
                 }
-                val (alreadyActive, _) = readDeviceState()
+                val targetPkg = when {
+                    manager == ManagerKind.CUSTOM && customManagerPkg.isNotBlank() -> customManagerPkg
+                    manager == ManagerKind.DYNAMIC && customManagerPkg.isNotBlank() -> customManagerPkg
+                    else -> manager.pkg
+                }
                 val ksudPreflight = PrivService.newProcess(
                     arrayOf("sh", "-c",
-                        "[ -n \"$(pm path '${manager.pkg}' 2>/dev/null)\" ] || [ -x /data/adb/ksu/bin/ksud ] || [ -x /data/adb/ksud ]"),
+                        "[ -n \"$(pm path '$targetPkg' 2>/dev/null)\" ] || [ -x /data/adb/ksu/bin/ksud ] || [ -x /data/adb/ksud ]"),
                     shizukuEnv(), "/"
                 ).waitFor()
                 if (ksudPreflight != 0) {
-                    addLog("Manager not installed: ${manager.pkg}. Install the manager APK first; ksud is executed from its APK, no bundled copy.")
+                    addLog("Manager not installed: $targetPkg. Install the manager APK first; ksud is executed from its APK, no bundled copy.")
                     return@launch
                 }
                 val nativeDir = applicationInfo.nativeLibraryDir
@@ -2645,7 +2671,7 @@ class MainActivity : ComponentActivity() {
                 }
                 addLog(if (active) "KernelSU module loaded" else "KernelSU module not loaded")
                 if (rc == 0 && active && !softReboot) {
-                    if (dynamicSwitching && customManagerPkg.isNotBlank()) {
+                    if ((dynamicSwitching || manager == ManagerKind.CUSTOM) && customManagerPkg.isNotBlank()) {
                         switchHotManagerByPkg(customManagerPkg, "Custom ($customManagerPkg)")
                     } else {
                         withContext(Dispatchers.Main) { launchManager() }
@@ -2687,8 +2713,8 @@ class MainActivity : ComponentActivity() {
             "${applicationInfo.nativeLibraryDir}/libsusfs_guard_lkm_612.so"
         }
         val susfsActive = susfsSupport && supportsSusfs()
-        val universal = dynamicSwitching && supportsUniversal()
-        val initialManager = if (manager == ManagerKind.DYNAMIC) ManagerKind.KERNELSU else manager
+        val universal = dynamicSwitching || manager == ManagerKind.CUSTOM
+        val initialManager = if (manager == ManagerKind.DYNAMIC || manager == ManagerKind.CUSTOM) ManagerKind.KERNELSU else manager
         val env = shizukuEnv() + "PYB110_DIR=$dir" + "PYB110_MANAGER=${initialManager.manager}" +
             "PYB110_LATE_LOAD=1" +
             "PYB110_UNLOAD_GUARD=${if (unloadGuard) "1" else "0"}" +
@@ -2758,7 +2784,8 @@ class MainActivity : ComponentActivity() {
         NEXT("KernelSU Next", "com.rifsxd.ksunext", "next"),
         BAKASU("BakaSU", "com.resukisu.resukisu", "bakasu"),
         SUKISU("SukiSU Ultra", "com.sukisu.ultra", "sukisu"),
-        DYNAMIC("Dynamic Switching", "me.weishu.kernelsu", "kernelsu")
+        DYNAMIC("Dynamic Switching", "me.weishu.kernelsu", "kernelsu"),
+        CUSTOM("Custom / Spoofed Manager", "", "custom")
     }
 
     private fun isVivoV2505a(): Boolean =
@@ -2785,11 +2812,10 @@ class MainActivity : ComponentActivity() {
             exploit != ExploitKind.UNSUPPORTED
 
     private fun managerChoices(): List<ManagerKind> =
-        if (supportsUniversal()) ManagerKind.entries
-        else ManagerKind.entries.filter { it != ManagerKind.DYNAMIC }
+        ManagerKind.entries
 
     private fun hotManagerChoices(): List<ManagerKind> =
-        ManagerKind.entries.filter { it != ManagerKind.DYNAMIC }
+        ManagerKind.entries.filter { it != ManagerKind.DYNAMIC && it != ManagerKind.CUSTOM }
 
     companion object {
         private const val REQ_SHIZUKU = 1001

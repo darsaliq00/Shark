@@ -35,7 +35,7 @@ Each kernel version has independent K source and `libk<version>.so`; shared engi
 - **History**: Each run saves a `.log`; tap to view, swipe left for "Export" button to share.
 - **About**: Version, Check Updates, Source Code / Join Community / Issue Tracker, AboutLibraries dependency list (versions, licenses, details), and offline bundled open-source license texts (GPL-3.0, NOTICE, Apache-2.0, MIT, GPL-2.0, MPL-2.0).
 - **Extras → Droidspaces Support** (6.18.21 only): "Download Module" fetches latest release of `Droidspaces-LKM` from GitHub, saves zip to `Download/Shark/`. Flash via KernelSU Manager → Modules → Install.
-- **ROOT Manager → Dynamic Switching** (6.18.21 / 6.12.69 / 6.12.38 / 6.12.58 / 6.12.23; not 6.6.118): Run once on clean boot; `libksud_universal.so` loads universal KSU LKM (initial KernelSU, embeds 6.18/6.12 dual KMI KO). Adds "Manager Hot Switch" in Extras to switch between KernelSU / KernelSU-Next / BakaSU / SukiSU / FinaSU on the fly without rebooting.
+- **ROOT Manager → Dynamic Switching** (6.18.21 / 6.12.69 / 6.12.38 / 6.12.58 / 6.12.23; not 6.6.118): Run once on clean boot; `libksud_universal.so` loads universal KSU LKM (initial KernelSU, embeds 6.18/6.12 dual KMI KO). Adds "Hot-switch Root Manager" in Extras to switch between KernelSU / KernelSU-Next / BakaSU / SukiSU / FinaSU on the fly without rebooting. Also supports **Custom / Spoofed Manager** package names via `/proc/kernelsu_manager`.
 
 ## Troubleshooting
 

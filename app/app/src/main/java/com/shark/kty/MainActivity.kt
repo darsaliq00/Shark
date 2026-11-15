@@ -134,6 +134,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.Notes
@@ -296,6 +297,8 @@ class MainActivity : ComponentActivity() {
     private var aboutPage by mutableStateOf(AboutPage.HOME)
     private var aboutLicense by mutableStateOf<LicenseItem?>(null)
     private var showDonate by mutableStateOf(false)
+    private var customManagerPkg by mutableStateOf("")
+    private var customPkgDialogVisible by mutableStateOf(false)
 
     private val permissionListener = Shizuku.OnRequestPermissionResultListener { code, result ->
         if (code == REQ_SHIZUKU) onPermissionResult(result == PackageManager.PERMISSION_GRANTED)
@@ -445,6 +448,7 @@ class MainActivity : ComponentActivity() {
         vfsSupport = getSharedPreferences("pyb110", MODE_PRIVATE).getBoolean("vfs_support", false)
         val savedManager = getSharedPreferences("pyb110", MODE_PRIVATE).getString("manager", null)
         manager = runCatching { ManagerKind.valueOf(savedManager ?: "") }.getOrDefault(ManagerKind.KERNELSU)
+        customManagerPkg = getSharedPreferences("pyb110", MODE_PRIVATE).getString("custom_manager_pkg", "").orEmpty()
         kernelVersion = runCatching { android.system.Os.uname().release }.getOrDefault("Unknown")
         exploit = PROFILE_BY_RELEASE[kernelVersion] ?: ExploitKind.UNSUPPORTED
         if (manager == ManagerKind.DYNAMIC && !supportsUniversal()) {
@@ -548,6 +552,7 @@ class MainActivity : ComponentActivity() {
         DroidspacesDialog()
         LicenseDetailDialog()
         DonateDialog()
+        CustomPkgDialog()
     }
 
     @Composable
@@ -1129,6 +1134,111 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
+    private fun CustomPkgDialog() {
+        if (!customPkgDialogVisible) return
+        val scheme = CouiTheme.colorScheme
+        val accent = scheme.accent
+        var textValue by remember(customPkgDialogVisible) {
+            mutableStateOf(customManagerPkg)
+        }
+        var errorMsg by remember { mutableStateOf<String?>(null) }
+        val context = LocalContext.current
+
+        Dialog(
+            onDismissRequest = { customPkgDialogVisible = false },
+            title = "Custom / Spoofed Manager",
+            confirmAction = CouiDialogAction(
+                text = if (universalLoaded) "Save & Switch" else "Save",
+                onClick = {
+                    val pkg = textValue.trim()
+                    if (pkg.isBlank()) {
+                        customManagerPkg = ""
+                        getSharedPreferences("pyb110", MODE_PRIVATE).edit()
+                            .remove("custom_manager_pkg").apply()
+                        customPkgDialogVisible = false
+                        addLog("Custom manager package cleared")
+                        return@CouiDialogAction
+                    }
+                    val installed = runCatching {
+                        context.packageManager.getPackageInfo(pkg, 0)
+                    }.isSuccess
+                    if (!installed) {
+                        errorMsg = "Package '$pkg' is not installed"
+                        return@CouiDialogAction
+                    }
+                    customManagerPkg = pkg
+                    getSharedPreferences("pyb110", MODE_PRIVATE).edit()
+                        .putString("custom_manager_pkg", pkg).apply()
+                    customPkgDialogVisible = false
+                    addLog("Custom manager package set: $pkg")
+                    if (universalLoaded) {
+                        switchHotManagerByPkg(pkg, "Custom ($pkg)")
+                    }
+                },
+                style = CouiDialogActionStyle.Primary,
+                colors = CouiDialogDefaults.primaryActionColors(accent)
+            ),
+            dismissAction = CouiDialogAction(
+                text = "Cancel",
+                onClick = { customPkgDialogVisible = false }
+            ),
+            visible = true
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = CouiDialogDefaults.contentPadding)
+            ) {
+                Text(
+                    text = "Enter package name of spoofed/custom KernelSU or fork. Used with Dynamic Switching to register with /proc/kernelsu_manager.",
+                    kind = CouiTextKind.PreferenceSummary,
+                    color = scheme.onSurfaceVariant,
+                    textAlign = TextAlign.Start
+                )
+                Spacer(Modifier.height(12.dp))
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(CouiShape(12.dp, 2f))
+                        .background(scheme.onSurface.copy(alpha = 0.08f))
+                        .padding(horizontal = 14.dp, vertical = 12.dp)
+                ) {
+                    if (textValue.isEmpty()) {
+                        Text(
+                            text = "e.g. com.example.myksu (or leave empty to clear)",
+                            kind = CouiTextKind.Body,
+                            color = scheme.onSurfaceVariant.copy(alpha = 0.5f)
+                        )
+                    }
+                    BasicTextField(
+                        value = textValue,
+                        onValueChange = {
+                            textValue = it
+                            errorMsg = null
+                        },
+                        singleLine = true,
+                        textStyle = rememberCouiTextStyle(CouiTextKind.Body).copy(
+                            color = scheme.onSurface,
+                            fontFamily = FontFamily.Monospace,
+                            fontSize = 14.sp
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+                errorMsg?.let {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        text = it,
+                        kind = CouiTextKind.Description,
+                        color = Color(0xFFD32F2F),
+                        textAlign = TextAlign.Start
+                    )
+                }
+            }
+        }
+    }
+
+    @Composable
     private fun LicenseDetailDialog() {
         val item = aboutLicense ?: return
         val context = LocalContext.current
@@ -1499,18 +1609,28 @@ class MainActivity : ComponentActivity() {
                             onCheckedChange = { updateVfsSupport(it) }
                         )
                     }
-                    if (supportsUniversal() && universalLoaded) {
-                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
-                        DropdownItem(
-                            icon = Icons.Filled.SwapHoriz,
-                            title = "Hot-switch Root Manager",
-                            values = hotManagerChoices(),
-                            selected = hotManager,
-                            label = { it.fullLabel }
-                        ) { target ->
-                            hotManager = target
-                            switchHotManager(target)
+                    if (supportsUniversal()) {
+                        if (universalLoaded) {
+                            Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                            DropdownItem(
+                                icon = Icons.Filled.SwapHoriz,
+                                title = "Hot-switch Root Manager",
+                                values = hotManagerChoices(),
+                                selected = hotManager,
+                                label = { it.fullLabel }
+                            ) { target ->
+                                hotManager = target
+                                switchHotManager(target)
+                            }
                         }
+                        Divider(startIndent = itemDividerIndent(), color = colors.divider)
+                        SettingItem(
+                            icon = Icons.Filled.SwapHoriz,
+                            title = "Custom / Spoofed Manager",
+                            summary = if (customManagerPkg.isBlank()) "Set spoofed/custom package name" else "Active: $customManagerPkg (tap to change)",
+                            onClick = { customPkgDialogVisible = true },
+                            trailing = { Chevron() }
+                        )
                     }
                 }
             }
@@ -2339,16 +2459,21 @@ class MainActivity : ComponentActivity() {
 
     private fun switchHotManager(kind: ManagerKind) {
         if (hotSwitchBusy || kind == ManagerKind.DYNAMIC) return
+        switchHotManagerByPkg(kind.pkg, kind.fullLabel)
+    }
+
+    private fun switchHotManagerByPkg(pkg: String, label: String) {
+        if (hotSwitchBusy || pkg.isBlank()) return
         hotSwitchBusy = true
         lifecycleScope.launch(Dispatchers.IO) {
-            val pkg = kind.pkg
             val appInfo = runCatching {
                 packageManager.getPackageInfo(pkg, 0).applicationInfo
             }.getOrNull()
             if (appInfo == null) {
                 withContext(Dispatchers.Main) {
                     hotSwitchBusy = false
-                    addLog("Hot switch -> ${kind.fullLabel} failed: package not installed")
+                    hotSwitchError = "Package not installed: $pkg"
+                    addLog("Hot switch -> $label failed: package not installed ($pkg)")
                 }
                 return@launch
             }
@@ -2363,18 +2488,18 @@ class MainActivity : ComponentActivity() {
                 hotSwitchBusy = false
                 if (rc == 0) {
                     hotSwitchError = null
-                    addLog("Hot switch -> ${kind.fullLabel} (rc=0)")
+                    addLog("Hot switch -> $label (rc=0, pkg=$pkg)")
                     val intent = packageManager.getLaunchIntentForPackage(pkg)
                     if (intent != null) {
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
                         runCatching { startActivity(intent) }
-                            .onFailure { addLog("Failed to open ${kind.fullLabel}: $it") }
+                            .onFailure { addLog("Failed to open $label: $it") }
                     } else {
                         addLog("Manager launch entry not found: $pkg")
                     }
                 } else {
                     hotSwitchError = "Switch failed: rc=$rc ${out.take(120)}"
-                    addLog("Hot switch -> ${kind.fullLabel} failed rc=$rc ${out.take(120)}")
+                    addLog("Hot switch -> $label failed rc=$rc ${out.take(120)}")
                 }
             }
         }
@@ -2520,7 +2645,11 @@ class MainActivity : ComponentActivity() {
                 }
                 addLog(if (active) "KernelSU module loaded" else "KernelSU module not loaded")
                 if (rc == 0 && active && !softReboot) {
-                    withContext(Dispatchers.Main) { launchManager() }
+                    if (dynamicSwitching && customManagerPkg.isNotBlank()) {
+                        switchHotManagerByPkg(customManagerPkg, "Custom ($customManagerPkg)")
+                    } else {
+                        withContext(Dispatchers.Main) { launchManager() }
+                    }
                 }
                 if (softReboot && rc == 0 && active) {
                     val delayMin = softRebootDelayMin

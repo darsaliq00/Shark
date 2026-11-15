@@ -76,7 +76,7 @@ Manager APKs are not distributed with Shark. Standard mode directly utilizes `ks
 
 - **One-Click Temporary Root**: No manual exploit selection required. Automatically matches the 7 exploit chains (6.18.21 / 6.12.69 / 6.12.38 / 6.12.58 / 6.12.23 / 6.6.118 / 6.6.127) based on `uname -r`. Tap "One-Click Jailbreak" to perform privilege escalation, `ksud late-load`, module install, and manager launch. Temporary root disappears upon reboot.
 - **Five Root Managers Available**: Select KernelSU, KernelSU-Next, BakaSU, SukiSU Ultra, or FinaSU directly from the dropdown. Not tied to a single manager; standard mode uses `ksud` and LKM directly from your installed APK.
-- **Hot-switch Root Manager**: Supported on 6.18 and 6.12 kernels. Select `Dynamic Switching` on clean boot to load the universal KSU LKM (initial: KernelSU), then switch to any target manager under Extras -> "Hot-switch Root Manager". Synchronizes version, features, private ioctl, primary manager, and restarts target manager without rebooting.
+- **Hot-switch Root Manager**: Supported on 6.18 and 6.12 kernels. Select `Dynamic Switching` on clean boot to load the universal KSU LKM (initial: KernelSU), then switch to any target manager under Extras -> "Hot-switch Root Manager". Synchronizes version, features, private ioctl, primary manager, and restarts target manager without rebooting. Also supports **Custom / Spoofed Package Names** via `/proc/kernelsu_manager`.
 - **Extras**: Load VFS provider on 6.18; load SUSFS on 6.12 / V2505A; toggle security prompt suppression, soft reboot after jailbreak, and unload kernel security guards. Independent toggles won't break root if one fails.
 - **Logs & History**: Real-time streaming logs during execution. Every run saves a full `.log` in History tab. View, delete, or swipe right to export and share.
 - **Online Updates**: Checks Gitee Releases first, falls back to GitHub. In-app download verifies SHA-256 and APK signature before delegating to system package installer.
@@ -214,9 +214,9 @@ Universal KO and dual KMI loader are built in [KSU-Universal](https://github.com
 
 ## Releases
 
-- GitHub: https://github.com/darsaliq00/Shark/releases/tag/v2.4.2
+- GitHub: https://github.com/darsaliq00/Shark/releases/tag/v2.4.3
 - Upstream: https://github.com/Yunnijian/Shark/releases/tag/v2.2.3
-- App: v2.4.2 (101)
+- App: v2.4.3 (102)
 
 Universal Kernel Releases:
 
